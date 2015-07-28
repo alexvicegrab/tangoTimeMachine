@@ -11,7 +11,12 @@ class NewVisitorTest(unittest.TestCase):
 
     def tearDown(self):
         self.browser.quit()
-    
+        
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+        
     def test_can_open_site_and_create_event(self):
         # Open the homepage
         self.browser.get('http://localhost:8000')
@@ -34,9 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         
         # Update page to list the single Tango Event
         # Now the page should read "Di Sarli, Carlos"
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1. Di Sarli, Carlos', [row.text for row in rows])
+        self.check_for_row_in_list_table('1. Di Sarli, Carlos')
         
         # Should still be able to to add an extra item
         # * "Troilo, Anibal"
@@ -45,10 +48,8 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
         
         # Update page to list both Events
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1. Di Sarli, Carlos', [row.text for row in rows])
-        self.assertIn('2. Troilo, Anibal', [row.text for row in rows])
+        self.check_for_row_in_list_table('1. Di Sarli, Carlos')
+        self.check_for_row_in_list_table('2. Troilo, Anibal')
         
         # Refreshing the page should show that the list of events is still there
         
