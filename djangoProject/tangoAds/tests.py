@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 from tangoAds.views import home_page
 
@@ -13,6 +14,10 @@ class HomePageTest(TestCase):
     def test_home_page_returns_correct_html(self):
         request = HttpRequest()
         response = home_page(request)
+        expected_html = render_to_string('home.html')
+        self.assertEqual(response.content.decode(), expected_html)
+        
+        # For now... still want to check the content
         self.assertTrue(response.content.startswith(b'<html>'))
         self.assertIn(b'<title>Tango Ads</title>', response.content)
-        self.assertTrue(response.content.endswith(b'</html>'))
+        self.assertTrue(response.content.strip().endswith(b'</html>'))
