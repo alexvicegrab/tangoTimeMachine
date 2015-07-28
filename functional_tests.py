@@ -20,7 +20,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_open_site_and_create_event(self):
         # Open the homepage
         self.browser.get('http://localhost:8000')
-
+        
         # Page header for TTM
         self.assertIn('Tango Ads', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
@@ -54,9 +54,6 @@ class NewVisitorTest(unittest.TestCase):
         # Refreshing the page should show that the list of events is still there
         
         self.fail('Finish the test!')
-    
+        
 if __name__ == '__main__':
     unittest.main()
-
-
-    
