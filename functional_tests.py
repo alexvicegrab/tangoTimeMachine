@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+#import time
 
 class NewVisitorTest(unittest.TestCase):
     
@@ -30,24 +31,28 @@ class NewVisitorTest(unittest.TestCase):
         # Input an example: "Di Sarli, Carlos"
         inputbox.send_keys('Di Sarli, Carlos')
         inputbox.send_keys(Keys.ENTER)
-
+        
         # Update page to list the single Tango Event
         # Now the page should read "Di Sarli, Carlos"
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1. Di Sarli, Carlos' for row in rows),
-            "New event did not appear in table"
-        )
+        self.assertIn('1. Di Sarli, Carlos', [row.text for row in rows])
         
-        self.fail('Finish the test!')
-
         # Should still be able to to add an extra item
         # * "Troilo, Anibal"
+        inputbox = self.browser.find_element_by_id('id_new_event')
+        inputbox.send_keys('Troilo, Anibal')
+        inputbox.send_keys(Keys.ENTER)
         
         # Update page to list both Events
-
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1. Di Sarli, Carlos', [row.text for row in rows])
+        self.assertIn('2. Troilo, Anibal', [row.text for row in rows])
+        
         # Refreshing the page should show that the list of events is still there
+        
+        self.fail('Finish the test!')
     
 if __name__ == '__main__':
     unittest.main()
