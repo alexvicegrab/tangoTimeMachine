@@ -15,9 +15,8 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8000')
 
         # Page header for TTM
-        self.assertIn('Tango Time Machine', self.browser.title)
-        self.fail('Finish the test!')
-
+        self.assertIn('Tango Ads', self.browser.title)
+        
         # Should be able to input a Tango Event into the TTM. Input an example:
         # * "Di Sarli, Carlos"
 
