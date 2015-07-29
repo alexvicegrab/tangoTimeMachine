@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from tangoAds.views import home_page
-from tangoAds.models import Event
+from tangoAds.models import Event, Page
 
 class HomePageTest(TestCase):   
     def test_root_url_resolves_to_home_page_view(self):
@@ -22,15 +22,23 @@ class HomePageTest(TestCase):
     
     
     
-class EventModelTest(TestCase):
+class PageAndEventModelTest(TestCase):
     def test_saving_and_retrieving_events(self):
+        page = Page()
+        page.save()
+        
         first_event = Event()
         first_event.headline = 'First headline'
+        first_event.page = page
         first_event.save()
         
         second_event = Event()
         second_event.headline = 'Second headline'
+        second_event.page = page
         second_event.save()
+        
+        saved_page = Page.objects.first()
+        self.assertEqual(saved_page, page)
         
         saved_events = Event.objects.all()
         self.assertEqual(saved_events.count(), 2)
@@ -38,7 +46,9 @@ class EventModelTest(TestCase):
         first_saved_event = saved_events[0]
         second_saved_event = saved_events[1]
         self.assertEqual(first_saved_event.headline, 'First headline')
+        self.assertEqual(first_saved_event.page, page)
         self.assertEqual(second_saved_event.headline, 'Second headline')
+        self.assertEqual(second_saved_event.page, page)
     
 
 class EventViewTest(TestCase):
@@ -47,8 +57,9 @@ class EventViewTest(TestCase):
         self.assertTemplateUsed(response, 'page.html')
     
     def test_displays_all_events(self):
-        Event.objects.create(headline="Event one")
-        Event.objects.create(headline="Event two")
+        page = Page.objects.create()
+        Event.objects.create(headline="Event one", page=page)
+        Event.objects.create(headline="Event two", page=page)
         
         response = self.client.get('/pages/the-only-page-in-the-database/')
         
