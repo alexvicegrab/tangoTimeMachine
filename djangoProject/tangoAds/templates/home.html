@@ -3,15 +3,10 @@
 		<title>Tango Ads</title>
 	</head>
 	<body>
-		<h1>Tango Ads</h1>
+		<h1>Add a new Tango Ads page</h1>
 		<form method="POST">
 			<input name="event_headline" id="id_new_event" placeholder="Enter a tango event"/>
 			{% csrf_token %}
 		</form>
-		<table id="id_list_table">
-			{% for event in events %}
-				<tr><td>{{ forloop.counter }}. {{ event.headline }}</td></tr>
-			{% endfor %}
-		</table>
 	</body>
 </html>

@@ -60,6 +60,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser = webdriver.Firefox()
         
         # We start adding new events to this page
+        self.browser.get(self.live_server_url)
         inputbox = self.browser.find_element_by_id('id_new_event')
         inputbox.send_keys("D'Arienzo, Juan")
         inputbox.send_keys(Keys.ENTER)

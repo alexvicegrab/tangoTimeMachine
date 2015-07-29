@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', 'tangoAds.views.home_page', name='home'),
+    url(r'^pages/the-only-page-in-the-database/$', 'tangoAds.views.view_page', name='view_page')
     #url(r'^admin/', include(admin.site.urls)),
 ]
