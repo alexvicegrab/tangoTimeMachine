@@ -1,7 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from tangoAds.models import Event
 
 def home_page(request):
-    return render(request, 'home.html', { 
-        'new_event_text': request.POST.get('event_text', ''),
-    })
+    if request.method == 'POST':
+        Event.objects.create(headline = request.POST['event_headline'])
+        return redirect('/')
+    
+    events = Event.objects.all()
+    return render(request, 'home.html', {'events': events})
+    
+    
