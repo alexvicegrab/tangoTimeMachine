@@ -20,26 +20,7 @@ class HomePageTest(TestCase):
         
         self.assertEqual(response.content.decode(), expected_html)
     
-    def test_home_page_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['event_headline'] = 'A new event headline'
-        
-        response = home_page(request)
-        
-        self.assertEqual(Event.objects.count(), 1)
-        new_event = Event.objects.first()
-        self.assertEqual(new_event.headline, 'A new event headline')
-        
-    def test_home_page_redirects_after_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['event_headline'] = 'A new event headline'
-        
-        response = home_page(request)
-        
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/pages/the-only-page-in-the-database/')
+    
     
 class EventModelTest(TestCase):
     def test_saving_and_retrieving_events(self):
@@ -59,10 +40,6 @@ class EventModelTest(TestCase):
         self.assertEqual(first_saved_event.headline, 'First headline')
         self.assertEqual(second_saved_event.headline, 'Second headline')
     
-    def test_home_page_only_saves_events_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Event.objects.count(), 0)
 
 class EventViewTest(TestCase):
     def test_uses_list_template(self):
@@ -77,5 +54,22 @@ class EventViewTest(TestCase):
         
         self.assertContains(response, "Event one")
         self.assertContains(response, "Event two")
+
+class NewPageTest(TestCase):
+    def test_saving_a_POST_request(self):
+        self.client.post(
+            '/pages/new',
+            data={'event_headline': 'A new event headline'}
+        )
     
-    
+        self.assertEqual(Event.objects.count(), 1)
+        new_event = Event.objects.first()
+        self.assertEqual(new_event.headline, 'A new event headline')
+        
+    def test_redirects_after_POST(self):
+        response = self.client.post(
+            '/pages/new',
+            data={'event_headline': 'A new event headline'}
+        )
+        
+        self.assertRedirects(response, '/pages/the-only-page-in-the-database/')
