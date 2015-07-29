@@ -4,12 +4,12 @@
 	</head>
 	<body>
 		<h1>Tango Ads</h1>
-		<form method="POST" action="/pages/new">
+		<form method="POST" action="/pages/{{ page.id }}/add_event">
 			<input name="event_headline" id="id_new_event" placeholder="Enter a tango event"/>
 			{% csrf_token %}
 		</form>
 		<table id="id_list_table">
-			{% for event in events %}
+			{% for event in page.event_set.all %}
 				<tr><td>{{ forloop.counter }}. {{ event.headline }}</td></tr>
 			{% endfor %}
 		</table>

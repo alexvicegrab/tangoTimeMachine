@@ -51,22 +51,59 @@ class PageAndEventModelTest(TestCase):
         self.assertEqual(second_saved_event.page, page)
     
 
-class EventViewTest(TestCase):
+class PageViewTest(TestCase):
+    def test_passes_correct_page_to_template(self):
+        other_page = Page.objects.create()
+        correct_page = Page.objects.create()
+        response = self.client.get('/pages/%d/' % (correct_page.id,))
+        self.assertEqual(response.context['page'], correct_page)
+        
     def test_uses_list_template(self):
-        response = self.client.get('/pages/the-only-page-in-the-database/')
+        page = Page.objects.create()
+        response = self.client.get('/pages/%d/' % (page.id,))
         self.assertTemplateUsed(response, 'page.html')
     
-    def test_displays_all_events(self):
-        page = Page.objects.create()
-        Event.objects.create(headline="Event one", page=page)
-        Event.objects.create(headline="Event two", page=page)
+    def test_displays_only_events_for_that_page(self):
+        correct_page = Page.objects.create()
+        Event.objects.create(headline="Event one", page=correct_page)
+        Event.objects.create(headline="Event two", page=correct_page)
+        other_page = Page.objects.create()
+        Event.objects.create(headline="Event three", page=other_page)
+        Event.objects.create(headline="Event four", page=other_page)
         
-        response = self.client.get('/pages/the-only-page-in-the-database/')
+        response = self.client.get('/pages/%d/' % (correct_page.id,) )
         
         self.assertContains(response, "Event one")
         self.assertContains(response, "Event two")
+        self.assertNotContains(response, "Event three")
+        self.assertNotContains(response, "Event four")
 
 class NewPageTest(TestCase):
+    def test_can_save_a_POST_request_to_an_existing_page(self):
+        other_page = Page.objects.create()
+        correct_page = Page.objects.create()
+        
+        self.client.post(
+            '/pages/%d/add_event' % (correct_page.id,),
+            data = {'event_headline': "A new event headline"}
+        )
+        
+        self.assertEqual(Event.objects.count(), 1)
+        new_event = Event.objects.first()
+        self.assertEqual(new_event.headline, "A new event headline")
+        self.assertEqual(new_event.page, correct_page)
+    
+    def test_redirects_to_page_view(self):
+        other_page = Page.objects.create()
+        correct_page = Page.objects.create()
+        
+        response = self.client.post(
+            '/pages/%d/add_event' % (correct_page.id,),
+            data = {'event_headline': "A new event for an existing page"}
+        )
+        
+        self.assertRedirects(response, '/pages/%d/' % (correct_page.id,))
+    
     def test_saving_a_POST_request(self):
         self.client.post(
             '/pages/new',
@@ -82,5 +119,5 @@ class NewPageTest(TestCase):
             '/pages/new',
             data={'event_headline': 'A new event headline'}
         )
-        
-        self.assertRedirects(response, '/pages/the-only-page-in-the-database/')
+        page = Page.objects.first()
+        self.assertRedirects(response, '/pages/%d/' % (page.id,))
