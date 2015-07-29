@@ -13,13 +13,11 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+from django.conf.urls import include, patterns, url
 from django.contrib import admin
 
-urlpatterns = [
+urlpatterns = patterns('',
     url(r'^$', 'tangoAds.views.home_page', name='home'),
-    url(r'^pages/(\d+)/$', 'tangoAds.views.view_page', name='view_page'),
-    url(r'^pages/(\d+)/add_event$', 'tangoAds.views.add_event', name='add_event'),
-    url(r'^pages/new$', 'tangoAds.views.new_page', name='new_page'),
+    url(r'^pages/', include('tangoAds.urls'))
     #url(r'^admin/', include(admin.site.urls)),
-]
+)
