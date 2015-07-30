@@ -5,7 +5,7 @@
 {% block form_action %}/pages/{{ page.id }}/add_event{% endblock %}
 
 {% block table %}
-	<table id="id_list_table">
+	<table id="id_list_table" class="table">
 		{% for event in page.event_set.all %}
 			<tr><td>{{ forloop.counter }}. {{ event.headline }}</td></tr>
 		{% endfor %}
