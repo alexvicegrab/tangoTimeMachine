@@ -1,17 +1,13 @@
-<html>
-	<head>
-		<title>Tango Ads</title>
-	</head>
-	<body>
-		<h1>Tango Ads</h1>
-		<form method="POST" action="/pages/{{ page.id }}/add_event">
-			<input name="event_headline" id="id_new_event" placeholder="Enter a tango event"/>
-			{% csrf_token %}
-		</form>
-		<table id="id_list_table">
-			{% for event in page.event_set.all %}
-				<tr><td>{{ forloop.counter }}. {{ event.headline }}</td></tr>
-			{% endfor %}
-		</table>
-	</body>
-</html>
+{% extends 'base.html' %}
+
+{% block header_text %}Tango Ads{% endblock %}
+
+{% block form_action %}/pages/{{ page.id }}/add_event{% endblock %}
+
+{% block table %}
+	<table id="id_list_table">
+		{% for event in page.event_set.all %}
+			<tr><td>{{ forloop.counter }}. {{ event.headline }}</td></tr>
+		{% endfor %}
+	</table>
+{% endblock %}

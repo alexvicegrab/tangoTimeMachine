@@ -1,12 +1,5 @@
-<html>
-	<head>
-		<title>Tango Ads</title>
-	</head>
-	<body>
-		<h1>Add a new Tango Ads page</h1>
-		<form method="POST" action="/pages/new">
-			<input name="event_headline" id="id_new_event" placeholder="Enter a tango event"/>
-			{% csrf_token %}
-		</form>
-	</body>
-</html>
+{% extends 'base.html' %}
+
+{% block header_text %}Add a new Tango Ads page{% endblock %}
+
+{% block form_action %}/pages/new{% endblock %}
